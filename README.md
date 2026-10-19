@@ -58,7 +58,7 @@ npm install -g pnpm@12.14.0
 
 ```bash
 # 1. Clonar el repositorio
-git clone https://github.com/ariana-lopez/calidad-software.git
+git clone https://github.com/ResilientOps-Team/calidad-software.git
 cd calidad-software
 
 # 2. Instalar dependencias (respetando el lockfile)
@@ -80,6 +80,8 @@ Abrir [http://localhost:3000](http://localhost:3000) en el navegador.
 | `pnpm test` | Ejecuta las pruebas automatizadas con Vitest (`vitest run`) |
 | `pnpm lint` | Análisis estático con ESLint (`eslint-config-next`); falla con errores o con más de 35 warnings |
 | `pnpm exec tsc --noEmit` | Verifica los tipos de TypeScript sin generar archivos |
+| `pnpm release` | Ejecuta semantic-release (solo en GitHub Actions; en local usar `--dry-run`) |
+| `pnpm check:deploy <url> [--version x.y.z]` | Validaciones posteriores al despliegue contra una URL |
 
 > `pnpm-workspace.yaml` deniega el script de instalación de `unrs-resolver` (dependencia de `eslint-config-next`). Ese script solo comprueba que el binario nativo opcional esté presente, y pnpm ya lo instala por plataforma.
 
@@ -106,6 +108,65 @@ Para reproducir el pipeline en local, ejecuta los pasos en ese orden.
 - `src/context/SimulationContext.test.tsx`: en jsdom, renderiza en servidor, hidrata y comprueba que no hay errores de hidratación y que los datos de `localStorage` se restauran (o se ignoran si están corruptos).
 
 **Evidencia:** en [`docs/evidencias/`](docs/evidencias/) están los logs y las capturas del pipeline en local, la inyección de un fallo por etapa y las ejecuciones en GitHub Actions.
+
+---
+
+## 🏷️ Versionado, releases y despliegue continuo
+
+El workflow [`.github/workflows/release.yml`](.github/workflows/release.yml) se dispara cuando el workflow **CI** termina en verde sobre un `push` a `main`, y trabaja sobre exactamente el commit que validó el CI. Si el CI falla, no se versiona ni se despliega nada.
+
+```
+CI verde en main ──► Versionado, tag, release y artefactos ──► Despliegue (GitHub Pages) ──► Validaciones posteriores
+```
+
+### Versionado semántico
+
+[semantic-release](https://semantic-release.gitbook.io/) ([`.releaserc.json`](.releaserc.json)) calcula la siguiente versión `MAYOR.MENOR.PARCHE` a partir de los mensajes de commit, que siguen [Conventional Commits](https://www.conventionalcommits.org/es/):
+
+| Commit | Ejemplo | Versión |
+|---|---|---|
+| `fix:` | `fix(motor): corrige el cálculo del RPO` | 1.0.0 → 1.0.**1** |
+| `feat:` | `feat(reporte): exporta el DRP a PDF` | 1.0.0 → 1.**1**.0 |
+| `feat!:` o `BREAKING CHANGE:` en el cuerpo | `feat!: nuevo formato de escenarios` | 1.0.0 → **2**.0.0 |
+| `docs:`, `test:`, `ci:`, `build:`, `refactor:`… | `docs: actualiza README` | sin release |
+
+La versión del repositorio es `0.0.0-development`: la versión real no se guarda en `package.json` sino en los tags. Durante el release, semantic-release escribe la versión calculada en el `package.json` del runner antes de compilar, y la app la muestra en la barra lateral y la declara en `<meta name="app-version">`.
+
+### Tags y releases
+
+Por cada versión se crea el tag `vX.Y.Z` y un [release de GitHub](https://github.com/ResilientOps-Team/calidad-software/releases) con las notas agrupadas por tipo de cambio (nuevas funcionalidades, correcciones, pruebas, CI/CD, documentación).
+
+### Artefactos de compilación
+
+[`scripts/package-release.sh`](scripts/package-release.sh) compila la app como sitio estático (`output: 'export'`, con `basePath` `/calidad-software`) y genera:
+
+- `resilientops-vX.Y.Z.zip`: el sitio compilado, listo para servir desde cualquier servidor estático.
+- `resilientops-vX.Y.Z.zip.sha256`: checksum para verificar la integridad del zip.
+
+Ambos se adjuntan al release de GitHub y se publican como artefacto del workflow (retención de 30 días). El build falla si no se genera `index.html` o si este no declara la versión del release.
+
+### Despliegue en el entorno de pruebas
+
+El sitio se despliega en **GitHub Pages**, entorno `github-pages`, restringido a la rama `main`:
+
+**https://resilientops-team.github.io/calidad-software/**
+
+El CI sigue validando el modo servidor (`next start`). La exportación estática solo se activa con `NEXT_OUTPUT=export` en el release.
+
+### Validaciones posteriores al despliegue
+
+[`scripts/post-deploy-check.mjs`](scripts/post-deploy-check.mjs) se ejecuta contra la URL desplegada. El job falla si alguna verificación no pasa:
+
+| Verificación | Detecta |
+|---|---|
+| `GET /` responde HTTP 200 con `text/html` | Sitio caído o despliegue incompleto |
+| Tiempo de respuesta menor a 3 s | Degradación del servicio |
+| El `<title>` empieza por "ResilientOps" | Se sirve otra aplicación o una página de error |
+| `<meta name="app-version">` y la interfaz coinciden con la versión del release | Se sigue sirviendo la versión anterior. Reintenta hasta 2 minutos mientras GitHub Pages propaga |
+| Todos los JS/CSS de `_next/static` responden 200 | `basePath` incorrecto o recursos sin publicar |
+| Una ruta inexistente responde 404 | Enrutamiento mal configurado |
+
+El resultado aparece como tabla en el resumen del job. Las pruebas de este script están en `scripts/post-deploy-check.test.mjs` y se ejecutan con `pnpm test`.
 
 ---
 
@@ -224,7 +285,7 @@ docker compose up --build
 
 ```bash
 # 1. Clonar en el servidor
-git clone https://github.com/ariana-lopez/calidad-software.git /var/www/resilientops
+git clone https://github.com/ResilientOps-Team/calidad-software.git /var/www/resilientops
 cd /var/www/resilientops
 
 # 2. Instalar pnpm, dependencias y compilar (requiere Node.js 22.12+)
