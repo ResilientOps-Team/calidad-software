@@ -1,0 +1,7 @@
+### FALLO INYECTADO: error de tipos en src/lib/__fault_type.ts
+### 2026-10-18 19:59:36 — Node v22.18.0 — pnpm 12.14.0
+$ npx -y pnpm@12.14.0 exec tsc --noEmit
+
+src/lib/__fault_type.ts(1,14): error TS2322: Type 'string' is not assignable to type 'number'.
+
+### exit code: 2

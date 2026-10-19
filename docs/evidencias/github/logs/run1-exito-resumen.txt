@@ -1,0 +1,65 @@
+### GitHub Actions run 39183583960 (resumen de pasos)
+### 2026-10-18 20:27:36 — gh 2.102.0 — cuenta aclj20
+$ gh run view 39183583960 --verbose --exit-status
+
+
+✓ ci/github-actions CI aclj20/calidad-software#1 · 39183583960
+Triggered via push about 23 minutes ago
+
+JOBS
+✓ Tipos, lint, pruebas y build in 41s (ID 117841278333)
+  ✓ Set up job
+  ✓ Checkout
+  ✓ Configurar pnpm
+  ✓ Configurar Node.js
+  ✓ Instalar dependencias
+  ✓ Verificar tipos
+  ✓ Análisis estático (ESLint)
+  ✓ Ejecutar pruebas
+  ✓ Compilar
+  ✓ Validar artefactos del build
+  ✓ Prueba de humo del servidor de producción
+  ✓ Post Configurar Node.js
+  ✓ Post Configurar pnpm
+  ✓ Post Checkout
+  ✓ Complete job
+
+ANNOTATIONS
+! 'RotateCcw' is defined but never used
+Tipos, lint, pruebas y build: src/components/history/HistoryView.tsx#8
+
+! 'History' is defined but never used  
+Tipos, lint, pruebas y build: src/components/history/HistoryView.tsx#5
+
+! 'setBkSize' is assigned a value but never used     
+Tipos, lint, pruebas y build: src/components/data/DataBackupsView.tsx#43
+
+! 'setDsServiceId' is assigned a value but never used
+Tipos, lint, pruebas y build: src/components/data/DataBackupsView.tsx#34
+
+! 'BackupCopy' is defined but never used             
+Tipos, lint, pruebas y build: src/components/data/DataBackupsView.tsx#18
+
+! 'Dataset' is defined but never used                
+Tipos, lint, pruebas y build: src/components/data/DataBackupsView.tsx#18
+
+! 'AlertTriangle' is defined but never used          
+Tipos, lint, pruebas y build: src/components/data/DataBackupsView.tsx#13
+
+! 'ShieldCheck' is defined but never used            
+Tipos, lint, pruebas y build: src/components/data/DataBackupsView.tsx#12
+
+! 'Clock' is defined but never used                  
+Tipos, lint, pruebas y build: src/components/data/DataBackupsView.tsx#11
+
+! 'ShieldCheck' is defined but never used
+Tipos, lint, pruebas y build: src/components/dashboard/DashboardView.tsx#11
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Tipos, lint, pruebas y build: .github#1
+
+
+For more information about the job, try: gh run view --job=117841278333
+View this run on GitHub: https://github.com/aclj20/calidad-software/actions/runs/39183583960
+
+### exit code: 0

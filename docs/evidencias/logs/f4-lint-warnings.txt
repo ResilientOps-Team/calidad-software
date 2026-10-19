@@ -1,0 +1,66 @@
+### FALLO INYECTADO: un warning nuevo supera el umbral --max-warnings 35
+### 2026-10-18 19:59:55 — Node v22.18.0 — pnpm 12.14.0
+$ npx -y pnpm@12.14.0 lint
+
+$ eslint --max-warnings 35
+
+C:\Users\Camila\Desktop\calidad-software\src\components\dashboard\DashboardView.tsx
+  11:3  warning  'ShieldCheck' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\Camila\Desktop\calidad-software\src\components\data\DataBackupsView.tsx
+  11:3   warning  'Clock' is defined but never used                    @typescript-eslint/no-unused-vars
+  12:3   warning  'ShieldCheck' is defined but never used              @typescript-eslint/no-unused-vars
+  13:3   warning  'AlertTriangle' is defined but never used            @typescript-eslint/no-unused-vars
+  18:10  warning  'Dataset' is defined but never used                  @typescript-eslint/no-unused-vars
+  18:19  warning  'BackupCopy' is defined but never used               @typescript-eslint/no-unused-vars
+  34:23  warning  'setDsServiceId' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  43:18  warning  'setBkSize' is assigned a value but never used       @typescript-eslint/no-unused-vars
+
+C:\Users\Camila\Desktop\calidad-software\src\components\history\HistoryView.tsx
+   5:3  warning  'History' is defined but never used    @typescript-eslint/no-unused-vars
+   8:3  warning  'RotateCcw' is defined but never used  @typescript-eslint/no-unused-vars
+  11:3  warning  'Layers' is defined but never used     @typescript-eslint/no-unused-vars
+
+C:\Users\Camila\Desktop\calidad-software\src\components\infrastructure\InfrastructureView.tsx
+  16:3  warning  'AlertTriangle' is defined but never used  @typescript-eslint/no-unused-vars
+  17:3  warning  'CheckCircle2' is defined but never used   @typescript-eslint/no-unused-vars
+  18:3  warning  'XCircle' is defined but never used        @typescript-eslint/no-unused-vars
+  21:3  warning  'ArrowRight' is defined but never used     @typescript-eslint/no-unused-vars
+
+C:\Users\Camila\Desktop\calidad-software\src\components\report\ReportView.tsx
+   7:3   warning  'Building2' is defined but never used              @typescript-eslint/no-unused-vars
+   9:3   warning  'CheckCircle2' is defined but never used           @typescript-eslint/no-unused-vars
+  10:3   warning  'XCircle' is defined but never used                @typescript-eslint/no-unused-vars
+  11:3   warning  'FileText' is defined but never used               @typescript-eslint/no-unused-vars
+  12:3   warning  'Clock' is defined but never used                  @typescript-eslint/no-unused-vars
+  13:3   warning  'Database' is defined but never used               @typescript-eslint/no-unused-vars
+  14:3   warning  'Download' is defined but never used               @typescript-eslint/no-unused-vars
+  19:23  warning  'scenarioName' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  19:37  warning  'components' is assigned a value but never used    @typescript-eslint/no-unused-vars
+
+C:\Users\Camila\Desktop\calidad-software\src\components\results\ResultsView.tsx
+   9:3  warning  'Clock' is defined but never used      @typescript-eslint/no-unused-vars
+  10:3  warning  'Database' is defined but never used   @typescript-eslint/no-unused-vars
+  11:3  warning  'Layers' is defined but never used     @typescript-eslint/no-unused-vars
+  12:3  warning  'Printer' is defined but never used    @typescript-eslint/no-unused-vars
+  14:3  warning  'Building2' is defined but never used  @typescript-eslint/no-unused-vars
+  15:3  warning  'Server' is defined but never used     @typescript-eslint/no-unused-vars
+  16:3  warning  'HardDrive' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\Camila\Desktop\calidad-software\src\components\simulations\SimulationsView.tsx
+  11:3  warning  'Database' is defined but never used           @typescript-eslint/no-unused-vars
+  83:5  warning  'datasets' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  84:5  warning  'backups' is assigned a value but never used   @typescript-eslint/no-unused-vars
+
+C:\Users\Camila\Desktop\calidad-software\src\lib\__fault_warn.ts
+  2:7  warning  'sinUso' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\Camila\Desktop\calidad-software\src\lib\simulationEngine.ts
+  8:3  warning  'ComponentStatus' is defined but never used  @typescript-eslint/no-unused-vars
+
+✖ 36 problems (0 errors, 36 warnings)
+
+ESLint found too many warnings (maximum: 35).
+[ELIFECYCLE] Command failed with exit code 1.
+
+### exit code: 1

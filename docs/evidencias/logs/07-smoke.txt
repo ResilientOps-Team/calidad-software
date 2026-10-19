@@ -1,0 +1,16 @@
+### Prueba de humo del servidor de producción
+### 2026-10-18 20:02:20 — Node v22.18.0 — pnpm 12.14.0
+$ free_port; npx -y pnpm@12.14.0 start --port 3123 > /dev/null 2>&1 &
+trap free_port EXIT
+for i in $(seq 1 30); do curl -sf -o /tmp/page.html http://localhost:3123/ && break; sleep 1; done
+[ -s /tmp/page.html ] || { echo "ERROR: el servidor no respondió con HTTP 2xx en /"; exit 1; }
+curl -s -o /dev/null -w "GET / -> HTTP %{http_code}\n" http://localhost:3123/
+grep -o "<title>[^<]*</title>" /tmp/page.html
+grep -q "<title>ResilientOps" /tmp/page.html || { echo "ERROR: la respuesta de / no contiene el título esperado"; exit 1; }
+echo "OK: GET / respondió con el título de ResilientOps"
+
+GET / -> HTTP 200
+<title>ResilientOps | Simulador de Continuidad Operativa ante Desastres</title>
+OK: GET / respondió con el título de ResilientOps
+
+### exit code: 0

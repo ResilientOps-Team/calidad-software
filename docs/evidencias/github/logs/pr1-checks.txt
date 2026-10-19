@@ -1,0 +1,15 @@
+### PR #1: estado de merge y checks obligatorios
+### 2026-10-18 20:26:17 — gh 2.102.0 — cuenta aclj20
+$ gh pr view 1 --json title,headRefName,mergeable,mergeStateStatus && gh pr checks 1 --required
+
+{
+  "headRefName": "ci/github-actions",
+  "mergeStateStatus": "CLEAN",
+  "mergeable": "MERGEABLE",
+  "title": "CI: pipeline de GitHub Actions (tipos, lint, pruebas y build)"
+}
+
+Tipos, lint, pruebas y build   pass  35s   https://github.com/aclj20/calidad-software/actions/runs/39185224524/job/117846130255
+Tipos, lint, pruebas y build   pass  42s   https://github.com/aclj20/calidad-software/actions/runs/39185228195/job/117846142158
+
+### exit code: 0
