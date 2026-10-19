@@ -1,6 +1,5 @@
 name: Release y despliegue
 
-# Solo se ejecuta cuando el CI terminó en verde sobre un push a main
 on:
   workflow_run:
     workflows: [CI]
@@ -10,7 +9,6 @@ on:
 permissions:
   contents: read
 
-# Nunca dos releases en paralelo: el segundo espera al primero
 concurrency:
   group: release-main
   cancel-in-progress: false
@@ -51,8 +49,6 @@ jobs:
       - name: Instalar dependencias
         run: pnpm install --frozen-lockfile
 
-      # Calcula la versión con Conventional Commits, compila y empaqueta el build,
-      # crea el tag vX.Y.Z y el release de GitHub con las notas y los artefactos adjuntos
       - name: Ejecutar semantic-release
         id: semrel
         run: pnpm run release
@@ -64,15 +60,6 @@ jobs:
       - name: Sin release nuevo
         if: steps.semrel.outputs.version == ''
         run: echo "::notice::No hay commits feat/fix/perf desde el último tag; no se publica versión ni se despliega"
-
-      - name: Publicar artefactos del build
-        if: steps.semrel.outputs.version != ''
-        uses: actions/upload-artifact@v7
-        with:
-          name: resilientops-v${{ steps.semrel.outputs.version }}
-          path: dist/
-          if-no-files-found: error
-          retention-days: 30
 
       - name: Preparar el sitio para GitHub Pages
         if: steps.semrel.outputs.version != ''

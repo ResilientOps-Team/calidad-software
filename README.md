@@ -143,7 +143,7 @@ Por cada versión se crea el tag `vX.Y.Z` y un [release de GitHub](https://githu
 - `resilientops-vX.Y.Z.zip`: el sitio compilado, listo para servir desde cualquier servidor estático.
 - `resilientops-vX.Y.Z.zip.sha256`: checksum para verificar la integridad del zip.
 
-Ambos se adjuntan al release de GitHub y se publican como artefacto del workflow (retención de 30 días). El build falla si no se genera `index.html` o si este no declara la versión del release.
+Ambos se adjuntan al release de GitHub, donde quedan descargables de forma permanente. El build falla si no se genera `index.html` o si este no declara la versión del release.
 
 ### Despliegue en el entorno de pruebas
 
