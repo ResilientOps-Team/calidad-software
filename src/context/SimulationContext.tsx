@@ -1,6 +1,6 @@
 'use client'
 
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React, { createContext, useContext, useState, useSyncExternalStore } from 'react'
 import {
   ActiveSection,
   InfraComponent,
@@ -50,6 +50,44 @@ interface SimulationContextType {
 
 const SimulationContext = createContext<SimulationContextType | undefined>(undefined)
 
+interface StoredState {
+  components?: InfraComponent[]
+  datasets?: Dataset[]
+  backups?: BackupCopy[]
+  history?: SimulationHistoryItem[]
+}
+
+function readStoredState(): StoredState {
+  const stored: StoredState = {}
+  try {
+    const savedComponents = localStorage.getItem('resilient_components')
+    if (savedComponents) stored.components = JSON.parse(savedComponents)
+
+    const savedDatasets = localStorage.getItem('resilient_datasets')
+    if (savedDatasets) stored.datasets = JSON.parse(savedDatasets)
+
+    const savedBackups = localStorage.getItem('resilient_backups')
+    if (savedBackups) stored.backups = JSON.parse(savedBackups)
+
+    const savedHistory = localStorage.getItem('resilient_history')
+    if (savedHistory) stored.history = JSON.parse(savedHistory)
+  } catch {
+    // LocalStorage access fallback
+  }
+  return stored
+}
+
+const subscribeNoop = () => () => {}
+
+// false during SSR and hydration, true once rendering on the client
+function useIsClient() {
+  return useSyncExternalStore(
+    subscribeNoop,
+    () => true,
+    () => false
+  )
+}
+
 export function SimulationProvider({ children }: { children: React.ReactNode }) {
   const [activeSection, setActiveSection] = useState<ActiveSection>('dashboard')
   const [scenarioName] = useState<string>(DEMO_SCENARIO_NAME)
@@ -65,24 +103,17 @@ export function SimulationProvider({ children }: { children: React.ReactNode }) 
   const [isSimulationActive, setIsSimulationActive] = useState(false)
   const [activeFailures, setActiveFailures] = useState<FailureEvent[]>([])
 
-  // Load from localStorage on mount
-  useEffect(() => {
-    try {
-      const savedComponents = localStorage.getItem('resilient_components')
-      if (savedComponents) setComponents(JSON.parse(savedComponents))
-
-      const savedDatasets = localStorage.getItem('resilient_datasets')
-      if (savedDatasets) setDatasets(JSON.parse(savedDatasets))
-
-      const savedBackups = localStorage.getItem('resilient_backups')
-      if (savedBackups) setBackups(JSON.parse(savedBackups))
-
-      const savedHistory = localStorage.getItem('resilient_history')
-      if (savedHistory) setHistory(JSON.parse(savedHistory))
-    } catch {
-      // LocalStorage access fallback
-    }
-  }, [])
+  // Load from localStorage once on the client, after hydration renders the initial data
+  const isClient = useIsClient()
+  const [restoredFromStorage, setRestoredFromStorage] = useState(false)
+  if (isClient && !restoredFromStorage) {
+    setRestoredFromStorage(true)
+    const stored = readStoredState()
+    if (stored.components) setComponents(stored.components)
+    if (stored.datasets) setDatasets(stored.datasets)
+    if (stored.backups) setBackups(stored.backups)
+    if (stored.history) setHistory(stored.history)
+  }
 
   // Execute Simulation with brief processing delay to show analysis
   const runSimulation = async (

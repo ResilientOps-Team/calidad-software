@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "test": "vitest run",
+    "lint": "eslint --max-warnings 35"
   },
   "dependencies": {
     "lucide-react": "^1.16.0",
@@ -19,8 +21,12 @@
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "eslint": "10.13.0",
+    "eslint-config-next": "16.4.2",
+    "jsdom": "^30.1.3",
     "postcss": "^8.5.0",
     "tailwindcss": "^4.0.0",
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "vitest": "5.0.5"
   }
 }

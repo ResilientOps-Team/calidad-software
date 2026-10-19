@@ -1,0 +1,17 @@
+### FALLO INYECTADO: import a un módulo inexistente en una ruta
+### 2026-10-18 20:00:14 — Node v22.18.0 — pnpm 12.14.0
+$ rm -rf .next && npx -y pnpm@12.14.0 run build
+
+$ next build
+▲ Next.js 16.4.2 (Turbopack)
+✓ Running next.config.ts took 49ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 4.0s
+  Running TypeScript ...
+src/app/__fault/page.tsx(1,15): error TS2307: Cannot find module './no-existe' or its corresponding type declarations.
+Failed to type check.
+
+[ELIFECYCLE] Command failed with exit code 1.
+
+### exit code: 1

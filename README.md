@@ -44,8 +44,15 @@ ResilientOps es una aplicación web interactiva que permite modelar infraestruct
 
 ### Prerrequisitos
 
-- [Node.js](https://nodejs.org) v20 o superior
-- npm v10+ (incluido con Node.js)
+- [Node.js](https://nodejs.org) v22.12 o superior (requerido por Vitest; Next.js exige ≥20.9)
+- [pnpm](https://pnpm.io) 12.14.0 — el proyecto usa `pnpm-lock.yaml`
+
+Si no tienes pnpm instalado:
+
+```bash
+npm install -g pnpm@12.14.0
+# o, sin instalarlo globalmente: npx pnpm@12.14.0 <comando>
+```
 
 ### Pasos
 
@@ -54,11 +61,11 @@ ResilientOps es una aplicación web interactiva que permite modelar infraestruct
 git clone https://github.com/ariana-lopez/calidad-software.git
 cd calidad-software
 
-# 2. Instalar dependencias
-npm install
+# 2. Instalar dependencias (respetando el lockfile)
+pnpm install --frozen-lockfile
 
 # 3. Iniciar servidor de desarrollo
-npm run dev
+pnpm dev
 ```
 
 Abrir [http://localhost:3000](http://localhost:3000) en el navegador.
@@ -67,9 +74,38 @@ Abrir [http://localhost:3000](http://localhost:3000) en el navegador.
 
 | Comando | Descripción |
 |---|---|
-| `npm run dev` | Inicia el servidor de desarrollo con hot reload |
-| `npm run build` | Genera el bundle de producción optimizado |
-| `npm run start` | Sirve el build de producción (requiere `npm run build` antes) |
+| `pnpm dev` | Inicia el servidor de desarrollo con hot reload |
+| `pnpm build` | Genera el bundle de producción optimizado |
+| `pnpm start` | Sirve el build de producción (requiere `pnpm build` antes) |
+| `pnpm test` | Ejecuta las pruebas automatizadas con Vitest (`vitest run`) |
+| `pnpm lint` | Análisis estático con ESLint (`eslint-config-next`); falla con errores o con más de 35 warnings |
+| `pnpm exec tsc --noEmit` | Verifica los tipos de TypeScript sin generar archivos |
+
+> `pnpm-workspace.yaml` deniega el script de instalación de `unrs-resolver` (dependencia de `eslint-config-next`). Ese script solo comprueba que el binario nativo opcional esté presente, y pnpm ya lo instala por plataforma.
+
+---
+
+## ✅ Integración continua
+
+El workflow [`.github/workflows/ci.yml`](.github/workflows/ci.yml) se ejecuta en cada `push` y `pull_request` sobre Ubuntu con Node.js 22 y pnpm 12.14.0. Cualquier paso que falle detiene el job y lo marca en rojo, y el job tiene un límite de 15 minutos.
+
+| # | Paso | Comando | Detecta |
+|---|---|---|---|
+| 1 | Instalación | `pnpm install --frozen-lockfile` | `package.json` desincronizado de `pnpm-lock.yaml` |
+| 2 | Tipos | `pnpm exec tsc --noEmit` | Errores de TypeScript (`strict`) |
+| 3 | Análisis estático | `pnpm lint` | Errores de ESLint y warnings por encima del umbral |
+| 4 | Pruebas | `pnpm test` | Regresiones en el motor de simulación y en la restauración desde `localStorage` |
+| 5 | Compilación | `pnpm run build` | Fallos de compilación de Next.js |
+| 6 | Artefactos | `test -s .next/BUILD_ID …` | Build sin `BUILD_ID` o sin la página `/` prerenderizada |
+| 7 | Prueba de humo | `pnpm start` + `curl` | El servidor de producción no responde o no sirve ResilientOps |
+
+Para reproducir el pipeline en local, ejecuta los pasos en ese orden.
+
+**Pruebas automatizadas:**
+- `src/lib/simulationEngine.test.ts`: motor de simulación en entorno Node. Cubre el escenario sin fallos, la caída del DC Lima, el corte del enlace troncal, el fallo del SAN Lima, la inmutabilidad de las entradas y casos límite.
+- `src/context/SimulationContext.test.tsx`: en jsdom, renderiza en servidor, hidrata y comprueba que no hay errores de hidratación y que los datos de `localStorage` se restauran (o se ignoran si están corruptos).
+
+**Evidencia:** en [`docs/evidencias/`](docs/evidencias/) están los logs y las capturas del pipeline en local, la inyección de un fallo por etapa y las ejecuciones en GitHub Actions.
 
 ---
 
@@ -107,7 +143,7 @@ Vercel es la plataforma oficial de Next.js — el deploy es automático con 0 co
 1. Crear cuenta en [netlify.com](https://netlify.com)
 2. Generar el build estático:
    ```bash
-   npm run build
+   pnpm build
    ```
 3. Instalar la CLI de Netlify:
    ```bash
@@ -124,9 +160,9 @@ Alternativa: conectar el repositorio de GitHub directamente desde el dashboard d
 
 | Campo | Valor |
 |---|---|
-| Build command | `npm run build` |
+| Build command | `pnpm build` |
 | Publish directory | `.next` |
-| Node version | `20` |
+| Node version | `22` |
 
 ---
 
@@ -137,19 +173,20 @@ Alternativa: conectar el repositorio de GitHub directamente desde el dashboard d
 Crear un archivo `Dockerfile` en la raíz del proyecto con el siguiente contenido:
 
 ```dockerfile
-FROM node:20-alpine AS base
+FROM node:22-alpine AS base
+RUN npm install -g pnpm@12.14.0
 
 FROM base AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
-COPY package*.json ./
-RUN npm ci
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
 
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN npm run build
+RUN pnpm build
 
 FROM base AS runner
 WORKDIR /app
@@ -190,15 +227,16 @@ docker compose up --build
 git clone https://github.com/ariana-lopez/calidad-software.git /var/www/resilientops
 cd /var/www/resilientops
 
-# 2. Instalar dependencias y compilar
-npm install
-npm run build
+# 2. Instalar pnpm, dependencias y compilar (requiere Node.js 22.12+)
+npm install -g pnpm@12.14.0
+pnpm install --frozen-lockfile
+pnpm build
 
 # 3. Instalar PM2 para mantener el proceso vivo
 npm install -g pm2
 
 # 4. Iniciar con PM2
-pm2 start npm --name "resilientops" -- start
+pm2 start pnpm --name "resilientops" -- start
 
 # 5. Guardar configuración de PM2 para reinicios del sistema
 pm2 save
@@ -243,14 +281,24 @@ calidad-software/
 │   │   ├── results/              # Análisis de resultados post-simulación
 │   │   └── simulations/          # Wizard de configuración de escenarios
 │   ├── context/
-│   │   └── SimulationContext.tsx # Estado global (React Context)
+│   │   ├── SimulationContext.tsx      # Estado global (React Context)
+│   │   └── SimulationContext.test.tsx # Prueba de hidratación (jsdom)
 │   ├── data/
 │   │   └── mockData.ts           # Datos iniciales del escenario Lima/Arequipa
 │   ├── lib/
-│   │   └── simulationEngine.ts   # Motor de simulación de desastres
+│   │   ├── simulationEngine.ts       # Motor de simulación de desastres
+│   │   └── simulationEngine.test.ts  # Pruebas unitarias (Vitest)
 │   └── types/
 │       └── resilient.ts          # Tipos TypeScript
+├── .github/
+│   └── workflows/
+│       └── ci.yml                # Pipeline de CI (tipos, lint, pruebas, build)
+├── docs/
+│   └── evidencias/               # Logs y capturas de validación del pipeline
+├── eslint.config.mjs
 ├── package.json
+├── pnpm-lock.yaml
+├── pnpm-workspace.yaml
 ├── next.config.ts
 ├── tsconfig.json
 └── README.md

@@ -1,0 +1,16 @@
+### Pruebas automatizadas
+### 2026-10-18 20:01:55 — Node v22.18.0 — pnpm 12.14.0
+$ npx -y pnpm@12.14.0 test
+
+$ vitest run
+
+ RUN  v5.0.5 C:/Users/Camila/Desktop/calidad-software
+
+
+ Test Files  2 passed (2)
+      Tests  22 passed (22)
+   Start at  20:01:59
+   Duration  2.48s (environment 85%, import 7%, tests 5%, transform 2%, worker 1%)
+
+
+### exit code: 0

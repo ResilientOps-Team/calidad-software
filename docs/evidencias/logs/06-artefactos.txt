@@ -1,0 +1,9 @@
+### Validación de artefactos del build
+### 2026-10-18 20:02:19 — Node v22.18.0 — pnpm 12.14.0
+$ test -s .next/BUILD_ID && test -s .next/server/app/index.html && echo "BUILD_ID: $(cat .next/BUILD_ID)" && ls -l .next/BUILD_ID .next/server/app/index.html
+
+BUILD_ID: NzqF5Q98TOSeaWtmsYua_
+-rw-r--r-- 1 Camila 197121    21 Oct 18 20:02 .next/BUILD_ID
+-rw-r--r-- 1 Camila 197121 36298 Oct 18 20:02 .next/server/app/index.html
+
+### exit code: 0

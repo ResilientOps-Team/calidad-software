@@ -1,0 +1,21 @@
+### FALLO INYECTADO: package.json desincronizado del lockfile (vitest 5.0.5 -> 5.0.4)
+### 2026-10-18 19:59:32 — Node v22.18.0 — pnpm 12.14.0
+$ npx -y pnpm@12.14.0 install --frozen-lockfile
+
+Error: ERR_PNPM_OUTDATED_LOCKFILE
+
+  × installing dependencies
+  ╰─▶ Cannot install with "frozen-lockfile" because pnpm-lock.yaml is not up
+      to date with package.json.
+      
+        Failure reason:
+        specifiers in the lockfile don't match specifiers in package.json:
+      * in importers["."]:
+      * 1 dependency is mismatched:
+        - vitest (lockfile: 5.0.5, manifest: 5.0.4)
+  help: Regenerate the lockfile with `pnpm install --lockfile-only` so that
+        pnpm-lock.yaml reflects the current package.json, then re-run `pnpm
+        install --frozen-lockfile`.
+
+
+### exit code: 1

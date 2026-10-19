@@ -1,0 +1,106 @@
+### FALLO INYECTADO: regresión en el motor (2.5 GB/h -> 3 GB/h)
+### 2026-10-18 20:00:06 — Node v22.18.0 — pnpm 12.14.0
+$ npx -y pnpm@12.14.0 test
+
+$ vitest run
+
+ RUN  v5.0.5 C:/Users/Camila/Desktop/calidad-software
+
+ ❯ src/lib/simulationEngine.test.ts (19 tests | 4 failed) 69ms
+   ❯ runDisasterSimulation (19)
+     ❯ sin eventos de fallo (4)
+       × calcula datos recuperables, RTO, RPO y pérdida estimada con los respaldos accesibles 10ms
+     ❯ caída del centro de datos Lima (6)
+       × recupera solo los datasets con respaldo fuera de la zona afectada 2ms
+     ❯ corte del enlace troncal de fibra (3)
+       × degrada los servicios sin caídas y sin pérdida de recuperabilidad 1ms
+     ❯ fallo del almacenamiento SAN de Lima (2)
+       × pierde el dataset cuyo único respaldo estaba en el almacenamiento fallido 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/lib/simulationEngine.test.ts > runDisasterSimulation > sin eventos de fallo > calcula datos recuperables, RTO, RPO y pérdida estimada con los respaldos accesibles
+AssertionError: expected 75 to be 63 // Object.is equality
+
+- Expected
++ Received
+
+- 63
++ 75
+
+ ❯ src/lib/simulationEngine.test.ts:100:33
+     98|       expect(result.rpoEstimatedHours).toBe(19)
+     99|       // round(2*2.5) + round(4*2.5) + round(19*2.5) = 5 + 10 + 48
+    100|       expect(result.dataLostGb).toBe(63)
+       |                                 ^
+    101|     })
+    102|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  src/lib/simulationEngine.test.ts > runDisasterSimulation > caída del centro de datos Lima > recupera solo los datasets con respaldo fuera de la zona afectada
+AssertionError: expected 298 to be 295 // Object.is equality
+
+- Expected
++ Received
+
+- 295
++ 298
+
+ ❯ src/lib/simulationEngine.test.ts:168:33
+    166|       expect(result.dataRecoverablePct).toBe(83)
+    167|       // 5 + 10 de pérdida estimada por RPO, más los 280 GB de ds-3 si…
+    168|       expect(result.dataLostGb).toBe(295)
+       |                                 ^
+    169|       expect(result.rtoEstimatedMinutes).toBe(65)
+    170|       expect(result.rpoEstimatedHours).toBe(4)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  src/lib/simulationEngine.test.ts > runDisasterSimulation > corte del enlace troncal de fibra > degrada los servicios sin caídas y sin pérdida de recuperabilidad
+AssertionError: expected 75 to be 63 // Object.is equality
+
+- Expected
++ Received
+
+- 63
++ 75
+
+ ❯ src/lib/simulationEngine.test.ts:220:33
+    218|       expect(result.componentsAffected).toBe(3)
+    219|       expect(result.dataRecoverablePct).toBe(100)
+    220|       expect(result.dataLostGb).toBe(63)
+       |                                 ^
+    221|     })
+    222|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  src/lib/simulationEngine.test.ts > runDisasterSimulation > fallo del almacenamiento SAN de Lima > pierde el dataset cuyo único respaldo estaba en el almacenamiento fallido
+AssertionError: expected 298 to be 295 // Object.is equality
+
+- Expected
++ Received
+
+- 295
++ 298
+
+ ❯ src/lib/simulationEngine.test.ts:246:33
+    244|       expect(result.dataRecoverableGb).toBe(1360)
+    245|       expect(result.dataRecoverablePct).toBe(83)
+    246|       expect(result.dataLostGb).toBe(295)
+       |                                 ^
+    247|     })
+    248|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  4 failed | 18 passed (22)
+   Start at  20:00:11
+   Duration  2.47s (environment 79%, import 8%, tests 7%, transform 5%, worker 1%)
+
+[ELIFECYCLE] Test failed. See above for more details.
+
+### exit code: 1
