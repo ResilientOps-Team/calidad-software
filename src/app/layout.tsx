@@ -6,6 +6,11 @@ export const metadata: Metadata = {
   title: 'ResilientOps | Simulador de Continuidad Operativa ante Desastres',
   description:
     'Simulador de continuidad operativa ante desastres para modelar infraestructuras digitales, evaluar disponibilidad y planificar DRP.',
+  // Permite verificar tras el despliegue qué versión y commit se están sirviendo
+  other: {
+    'app-version': process.env.NEXT_PUBLIC_APP_VERSION ?? '',
+    'app-commit': process.env.NEXT_PUBLIC_APP_COMMIT ?? '',
+  },
 }
 
 export default function RootLayout({
