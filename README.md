@@ -115,7 +115,7 @@ Para reproducir el pipeline en local, ejecuta los pasos en ese orden.
 
 El workflow [`.github/workflows/release.yml`](.github/workflows/release.yml) se dispara cuando el workflow **CI** termina en verde sobre un `push` a `main`, y trabaja sobre exactamente el commit que validó el CI. Si el CI falla, no se versiona ni se despliega nada.
 
-```
+```text
 CI verde en main ──► Versionado, tag, release y artefactos ──► Despliegue (GitHub Pages) ──► Validaciones posteriores
 ```
 
@@ -149,7 +149,7 @@ Ambos se adjuntan al release de GitHub y se publican como artefacto del workflow
 
 El sitio se despliega en **GitHub Pages**, entorno `github-pages`, restringido a la rama `main`:
 
-**https://resilientops-team.github.io/calidad-software/**
+**<https://resilientops-team.github.io/calidad-software/>**
 
 El CI sigue validando el modo servidor (`next start`). La exportación estática solo se activa con `NEXT_OUTPUT=export` en el release.
 
