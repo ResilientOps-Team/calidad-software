@@ -1,0 +1,52 @@
+{
+  "branches": ["main"],
+  "tagFormat": "v${version}",
+  "plugins": [
+    [
+      "@semantic-release/commit-analyzer",
+      {
+        "preset": "conventionalcommits"
+      }
+    ],
+    [
+      "@semantic-release/release-notes-generator",
+      {
+        "preset": "conventionalcommits",
+        "presetConfig": {
+          "types": [
+            { "type": "feat", "section": "Nuevas funcionalidades" },
+            { "type": "fix", "section": "Correcciones" },
+            { "type": "perf", "section": "Rendimiento" },
+            { "type": "revert", "section": "Reversiones" },
+            { "type": "refactor", "section": "Refactorización" },
+            { "type": "test", "section": "Pruebas" },
+            { "type": "ci", "section": "Integración y despliegue continuos" },
+            { "type": "build", "section": "Build y dependencias" },
+            { "type": "docs", "section": "Documentación" },
+            { "type": "chore", "hidden": true },
+            { "type": "style", "hidden": true }
+          ]
+        }
+      }
+    ],
+    [
+      "@semantic-release/exec",
+      {
+        "prepareCmd": "bash scripts/package-release.sh ${nextRelease.version}",
+        "successCmd": "echo \"version=${nextRelease.version}\" >> \"$GITHUB_OUTPUT\""
+      }
+    ],
+    [
+      "@semantic-release/github",
+      {
+        "assets": [
+          { "path": "dist/*.zip", "label": "Build estático de ResilientOps (zip)" },
+          { "path": "dist/*.sha256", "label": "Checksum SHA-256 del build" }
+        ],
+        "successComment": false,
+        "failComment": false,
+        "releasedLabels": false
+      }
+    ]
+  ]
+}

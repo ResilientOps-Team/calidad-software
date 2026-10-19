@@ -102,7 +102,7 @@ export function Sidebar() {
               ResilientOps
             </span>
             <span className="rounded bg-blue-900/60 px-1.5 py-0.5 text-[10px] font-mono font-medium text-blue-300">
-              v0.1.0
+              {`v${process.env.NEXT_PUBLIC_APP_VERSION}`}
             </span>
           </div>
           <div className="mt-1 flex items-center gap-1.5 text-[11px] text-slate-400">
