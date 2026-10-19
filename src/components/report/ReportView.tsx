@@ -75,6 +75,9 @@ export function ReportView() {
               REF: DRP-SIM-{lastResult.id.slice(-6)}
             </span>
             <p className="mt-0.5">Fecha: {lastResult.timestamp}</p>
+            <p className="mt-0.5 font-mono">
+              {`Versión: v${process.env.NEXT_PUBLIC_APP_VERSION} (${process.env.NEXT_PUBLIC_APP_COMMIT})`}
+            </p>
             <p className="font-medium text-blue-600">Entorno de Simulación</p>
           </div>
         </div>
@@ -247,7 +250,7 @@ export function ReportView() {
 
         {/* Footer */}
         <div className="border-t border-slate-200 pt-6 flex justify-between items-center text-[11px] text-slate-400">
-          <span>ResilientOps v0.1.0 • Generado automáticamente</span>
+          <span>{`ResilientOps v${process.env.NEXT_PUBLIC_APP_VERSION} • Generado automáticamente`}</span>
           <span>Página 1 de 1</span>
         </div>
       </div>
