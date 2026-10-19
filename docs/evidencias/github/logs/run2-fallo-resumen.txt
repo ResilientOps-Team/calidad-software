@@ -1,0 +1,120 @@
+### GitHub Actions run 39184474431 (resumen de pasos)
+### 2026-10-18 20:27:38 — gh 2.102.0 — cuenta aclj20
+$ gh run view 39184474431 --verbose --exit-status
+
+
+X ci/github-actions CI aclj20/calidad-software#1 · 39184474431
+Triggered via push about 12 minutes ago
+
+JOBS
+X Tipos, lint, pruebas y build in 26s (ID 117843874332)
+  ✓ Set up job
+  ✓ Checkout
+  ✓ Configurar pnpm
+  ✓ Configurar Node.js
+  ✓ Instalar dependencias
+  ✓ Verificar tipos
+  ✓ Análisis estático (ESLint)
+  X Ejecutar pruebas
+  - Compilar
+  - Validar artefactos del build
+  - Prueba de humo del servidor de producción
+  - Post Configurar Node.js
+  ✓ Post Configurar pnpm
+  ✓ Post Checkout
+  ✓ Complete job
+
+ANNOTATIONS
+X Process completed with exit code 1.
+Tipos, lint, pruebas y build: .github#175
+
+X AssertionError: expected 298 to be 295 // Object.is equality
+
+- Expected
++ Received
+
+- 295
++ 298
+
+ ❯ src/lib/simulationEngine.test.ts:246:33
+
+
+Tipos, lint, pruebas y build: src/lib/simulationEngine.test.ts#246
+
+X AssertionError: expected 75 to be 63 // Object.is equality
+
+- Expected
++ Received
+
+- 63
++ 75
+
+ ❯ src/lib/simulationEngine.test.ts:220:33
+
+
+Tipos, lint, pruebas y build: src/lib/simulationEngine.test.ts#220
+
+X AssertionError: expected 298 to be 295 // Object.is equality
+
+- Expected
++ Received
+
+- 295
++ 298
+
+ ❯ src/lib/simulationEngine.test.ts:168:33
+
+
+Tipos, lint, pruebas y build: src/lib/simulationEngine.test.ts#168
+
+X AssertionError: expected 75 to be 63 // Object.is equality
+
+- Expected
++ Received
+
+- 63
++ 75
+
+ ❯ src/lib/simulationEngine.test.ts:100:33
+
+
+Tipos, lint, pruebas y build: src/lib/simulationEngine.test.ts#100
+
+! 'RotateCcw' is defined but never used
+Tipos, lint, pruebas y build: src/components/history/HistoryView.tsx#8
+
+! 'History' is defined but never used  
+Tipos, lint, pruebas y build: src/components/history/HistoryView.tsx#5
+
+! 'setBkSize' is assigned a value but never used     
+Tipos, lint, pruebas y build: src/components/data/DataBackupsView.tsx#43
+
+! 'setDsServiceId' is assigned a value but never used
+Tipos, lint, pruebas y build: src/components/data/DataBackupsView.tsx#34
+
+! 'BackupCopy' is defined but never used             
+Tipos, lint, pruebas y build: src/components/data/DataBackupsView.tsx#18
+
+! 'Dataset' is defined but never used                
+Tipos, lint, pruebas y build: src/components/data/DataBackupsView.tsx#18
+
+! 'AlertTriangle' is defined but never used          
+Tipos, lint, pruebas y build: src/components/data/DataBackupsView.tsx#13
+
+! 'ShieldCheck' is defined but never used            
+Tipos, lint, pruebas y build: src/components/data/DataBackupsView.tsx#12
+
+! 'Clock' is defined but never used                  
+Tipos, lint, pruebas y build: src/components/data/DataBackupsView.tsx#11
+
+! 'ShieldCheck' is defined but never used
+Tipos, lint, pruebas y build: src/components/dashboard/DashboardView.tsx#11
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Tipos, lint, pruebas y build: .github#1
+
+
+To see what failed, try: gh run view 39184474431 --log-failed
+View this run on GitHub: https://github.com/aclj20/calidad-software/actions/runs/39184474431
+
+### exit code: 1

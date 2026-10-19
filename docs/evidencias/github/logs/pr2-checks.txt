@@ -1,0 +1,15 @@
+### PR #2: estado de merge y checks obligatorios
+### 2026-10-18 20:26:20 — gh 2.102.0 — cuenta aclj20
+$ gh pr view 2 --json title,headRefName,mergeable,mergeStateStatus && gh pr checks 2 --required
+
+{
+  "headRefName": "demo/check-obligatorio-falla",
+  "mergeStateStatus": "BLOCKED",
+  "mergeable": "MERGEABLE",
+  "title": "[DEMO - no fusionar] Regresión intencional: el check obligatorio bloquea el merge"
+}
+
+Tipos, lint, pruebas y build   fail  27s   https://github.com/aclj20/calidad-software/actions/runs/39185239160/job/117846176461
+Tipos, lint, pruebas y build   fail  25s   https://github.com/aclj20/calidad-software/actions/runs/39185243170/job/117846188951
+
+### exit code: 1

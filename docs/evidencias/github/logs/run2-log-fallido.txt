@@ -1,0 +1,124 @@
+### Log del paso fallido del run 39184474431 (GitHub Actions)
+### 2026-10-18 20:26:17 — gh 2.102.0 — cuenta aclj20
+$ gh run view 39184474431 --log-failed
+
+$ vitest run
+ RUN  v5.0.5 /home/runner/work/calidad-software/calidad-software
+ ❯ src/lib/simulationEngine.test.ts (19 tests | 4 failed) 55ms
+   ❯ runDisasterSimulation (19)
+     ✓ metadatos del resultado (1)
+       ✓ genera el id a partir de la hora actual y conserva el escenario y los eventos 23ms
+     ❯ sin eventos de fallo (4)
+       ✓ mantiene todos los servicios y componentes operativos 1ms
+       × calcula datos recuperables, RTO, RPO y pérdida estimada con los respaldos accesibles 8ms
+       ✓ incluye un detalle de recuperación por dataset y por servicio 2ms
+       ✓ identifica como SPOF los servidores y almacenamientos de Lima con servicios dependientes 1ms
+     ❯ caída del centro de datos Lima (6)
+       ✓ propaga el fallo a los componentes alojados en el centro de datos 1ms
+       ✓ deja caídos todos los servicios que dependen de servidores de Lima 2ms
+       ✓ marca caídas las conexiones con extremos fallidos aunque exista enlace redundante 1ms
+       × recupera solo los datasets con respaldo fuera de la zona afectada 2ms
+       ✓ asigna a los servicios caídos el RTO máximo de los respaldos accesibles 1ms
+       ✓ genera hallazgos de alta disponibilidad y de respaldo en la misma zona 1ms
+     ❯ corte del enlace troncal de fibra (3)
+       ✓ degrada el enlace caído al existir un enlace redundante disponible 1ms
+       × degrada los servicios sin caídas y sin pérdida de recuperabilidad 1ms
+       ✓ genera el hallazgo de ruta alternativa con severidad media 2ms
+     ❯ fallo del almacenamiento SAN de Lima (2)
+       ✓ deja caído el servicio que depende directamente del almacenamiento 1ms
+       × pierde el dataset cuyo único respaldo estaba en el almacenamiento fallido 1ms
+     ✓ integridad de las entradas (1)
+       ✓ no modifica los componentes ni las conexiones recibidos 2ms
+     ✓ casos límite (2)
+       ✓ reporta 100% recuperable cuando no hay datasets registrados 1ms
+       ✓ pierde todo el dataset cuando no tiene ninguna copia de respaldo 1ms
+ ✓ src/context/SimulationContext.test.tsx (3 tests) 60ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  src/lib/simulationEngine.test.ts > runDisasterSimulation > sin eventos de fallo > calcula datos recuperables, RTO, RPO y pérdida estimada con los respaldos accesibles
+AssertionError: expected 75 to be 63 // Object.is equality
+- Expected
++ Received
+- 63
++ 75
+ ❯ src/lib/simulationEngine.test.ts:100:33
+     98|       expect(result.rpoEstimatedHours).toBe(19)
+     99|       // round(2*2.5) + round(4*2.5) + round(19*2.5) = 5 + 10 + 48
+    100|       expect(result.dataLostGb).toBe(63)
+       |                                 ^
+    101|     })
+    102|
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+ FAIL  src/lib/simulationEngine.test.ts > runDisasterSimulation > caída del centro de datos Lima > recupera solo los datasets con respaldo fuera de la zona afectada
+AssertionError: expected 298 to be 295 // Object.is equality
+- Expected
++ Received
+ Test Files  1 failed | 1 passed (2)
+      Tests  4 failed | 18 passed (22)
+   Start at  01:15:16
+- 295
++ 298
+ ❯ src/lib/simulationEngine.test.ts:168:33
+   Duration  1.07s (environment 63%, transform 13%, import 12%, tests 10%, worker 1%)
+    166|       expect(result.dataRecoverablePct).toBe(83)
+    167|       // 5 + 10 de pérdida estimada por RPO, más los 280 GB de ds-3 si…
+    168|       expect(result.dataLostGb).toBe(295)
+       |                                 ^
+    169|       expect(result.rtoEstimatedMinutes).toBe(65)
+    170|       expect(result.rpoEstimatedHours).toBe(4)
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+ FAIL  src/lib/simulationEngine.test.ts > runDisasterSimulation > corte del enlace troncal de fibra > degrada los servicios sin caídas y sin pérdida de recuperabilidad
+AssertionError: expected 75 to be 63 // Object.is equality
+- Expected
++ Received
+- 63
++ 75
+ ❯ src/lib/simulationEngine.test.ts:220:33
+    218|       expect(result.componentsAffected).toBe(3)
+    219|       expect(result.dataRecoverablePct).toBe(100)
+    220|       expect(result.dataLostGb).toBe(63)
+       |                                 ^
+    221|     })
+    222|
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+ FAIL  src/lib/simulationEngine.test.ts > runDisasterSimulation > fallo del almacenamiento SAN de Lima > pierde el dataset cuyo único respaldo estaba en el almacenamiento fallido
+AssertionError: expected 298 to be 295 // Object.is equality
+- Expected
++ Received
+- 295
++ 298
+ ❯ src/lib/simulationEngine.test.ts:246:33
+    244|       expect(result.dataRecoverableGb).toBe(1360)
+    245|       expect(result.dataRecoverablePct).toBe(83)
+    246|       expect(result.dataLostGb).toBe(295)
+       |                                 ^
+    247|     })
+    248|   })
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+##[error]AssertionError: expected 75 to be 63 // Object.is equality
+- Expected
++ Received
+- 63
++ 75
+ ❯ src/lib/simulationEngine.test.ts:100:33
+##[error]AssertionError: expected 298 to be 295 // Object.is equality
+- Expected
++ Received
+- 295
++ 298
+ ❯ src/lib/simulationEngine.test.ts:168:33
+##[error]AssertionError: expected 75 to be 63 // Object.is equality
+- Expected
++ Received
+- 63
++ 75
+ ❯ src/lib/simulationEngine.test.ts:220:33
+##[error]AssertionError: expected 298 to be 295 // Object.is equality
+- Expected
++ Received
+- 295
++ 298
+ ❯ src/lib/simulationEngine.test.ts:246:33
+[ELIFECYCLE] Test failed. See above for more details.
+##[error]Process completed with exit code 1.
+
+### exit code: 1
